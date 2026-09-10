@@ -9,6 +9,7 @@ import { FAQ } from '@/blocks/faq';
 import { Footer } from '@/blocks/footer';
 import { GamePlay } from '@/blocks/game-play';
 import { Header } from '@/blocks/header';
+import { HomeGuide } from '@/blocks/home-guide';
 import { HowToPlay } from '@/blocks/how-to-play';
 import { SupportWidget } from '@/blocks/support-widget';
 
@@ -20,6 +21,7 @@ function HomePage() {
         <GamePlay />
         <HowToPlay />
         <AboutGame />
+        <HomeGuide />
         <FAQ />
         <CTA />
       </main>
