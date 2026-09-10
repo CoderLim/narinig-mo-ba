@@ -7,25 +7,36 @@ import { buttonVariants } from '@/components/ui/button';
 
 export function CTA() {
   return (
-    <section className="px-4 pb-24 sm:pb-24">
+    <section className="px-4 pb-24">
       <div className="mx-auto max-w-5xl">
-        <div className="rounded-3xl border border-dashed px-6 py-12 text-center sm:px-10 sm:py-16">
-          <h2 className="mx-auto max-w-3xl font-serif text-4xl leading-[1.1] font-medium tracking-tight sm:text-5xl lg:text-5xl">
+        <div className="from-primary/15 via-background to-accent/20 rounded-3xl border bg-gradient-to-br px-6 py-12 text-center sm:px-10 sm:py-16">
+          <h2 className="mx-auto max-w-3xl font-serif text-3xl leading-tight tracking-tight sm:text-4xl">
             {m['landing.cta.headline']()}
           </h2>
-          <p className="text-muted-foreground mx-auto mt-6 max-w-4xl text-base leading-relaxed sm:text-lg">
+          <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-base leading-relaxed sm:text-lg">
             {m['landing.cta.subheadline']()}
           </p>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
-              href="/settings"
+              href="/#play"
               className={cn(
                 buttonVariants({ size: 'lg' }),
                 'h-12 gap-2 rounded-full px-8'
               )}
+              title={m['landing.cta.button']()}
             >
               {m['landing.cta.button']()}
               <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              href="/play"
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'lg' }),
+                'h-12 rounded-full px-8'
+              )}
+              title={m['landing.cta.secondary']()}
+            >
+              {m['landing.cta.secondary']()}
             </Link>
           </div>
         </div>

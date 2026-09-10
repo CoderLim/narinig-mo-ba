@@ -1,0 +1,48 @@
+{
+  "domain": "narinigmoba.site",
+  "site": {
+    "name": "narinig mo ba",
+    "canonicalUrl": "https://narinigmoba.site"
+  },
+  "repository": {
+    "owner": "CoderLim",
+    "name": "narinig-mo-ba",
+    "visibility": "public",
+    "template": "git@github.com:shipany-ai/shipany-tanstack.git"
+  },
+  "hosting": {
+    "provider": "cloudflare",
+    "type": "workers",
+    "projectName": "narinig-mo-ba",
+    "productionBranch": "main",
+    "deployCommand": "pnpm cf:deploy"
+  },
+  "registrar": {
+    "provider": "spaceship"
+  },
+  "cloudflare": {
+    "alwaysHttps": true,
+    "redirectWwwToApex": true
+  },
+  "email": {
+    "enabled": true,
+    "aliases": ["support"],
+    "destinationEnv": "SUPPORT_EMAIL_DESTINATION"
+  },
+  "analytics": {
+    "ga4": true,
+    "plausible": true,
+    "injectCommand": "node scripts/set-ga-id.mjs \"$AUTO_LAUNCH_GA_ID\""
+  },
+  "search": {
+    "gsc": true,
+    "sitemapPath": "/sitemap.xml"
+  },
+  "audit": {
+    "buildCommand": "pnpm build",
+    "launchAuditCommand": ""
+  },
+  "payments": {
+    "enabled": false
+  }
+}

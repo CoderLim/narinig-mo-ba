@@ -6,6 +6,7 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 import { useSession } from '@/core/auth/client';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { currentPathWithQuery } from '@/lib/redirect';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
 import { LocaleSelector } from '@/components/locale-selector';
@@ -23,6 +24,11 @@ export interface NavLink {
 /** Off-site URLs render as plain <a>; internal paths use the locale-aware Link. */
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 
+function authHref(path: '/sign-in' | '/sign-up') {
+  const callbackUrl = encodeURIComponent(currentPathWithQuery('/'));
+  return `${path}?callbackUrl=${callbackUrl}`;
+}
+
 export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data: session } = useSession();
@@ -32,7 +38,14 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
     <header className="bg-background/80 sticky top-0 z-50 w-full backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         {/* Brand */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <img
+            src="/logo.svg"
+            alt=""
+            width={28}
+            height={28}
+            className="size-7"
+          />
           <span className="font-serif text-lg italic">
             {envConfigs.app_name}
           </span>
@@ -47,6 +60,7 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                title={link.label}
                 className="text-muted-foreground hover:text-foreground text-sm transition-colors"
               >
                 {link.label}
@@ -56,6 +70,7 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
                 key={link.href}
                 href={link.href}
                 target={link.external ? '_blank' : undefined}
+                title={link.label}
                 className="text-muted-foreground hover:text-foreground text-sm transition-colors"
               >
                 {link.label}
@@ -75,10 +90,18 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
               image={user.image}
             />
           ) : (
-            <Link href="/settings" className={cn(buttonVariants(), 'gap-1.5')}>
-              {m['common.nav.get_started']()}
-              <ArrowRight className="size-4" />
-            </Link>
+            <>
+              <Link
+                href={authHref('/sign-in')}
+                className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
+              >
+                {m['common.nav.sign_in']()}
+              </Link>
+              <Link href="/#play" className={cn(buttonVariants(), 'gap-1.5')}>
+                {m['common.nav.play_now']()}
+                <ArrowRight className="size-4" />
+              </Link>
+            </>
           )}
         </div>
 
@@ -104,6 +127,7 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={link.label}
                   className="text-muted-foreground hover:bg-accent hover:text-foreground rounded-md px-3 py-2 text-sm transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -114,6 +138,7 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
                   key={link.href}
                   href={link.href}
                   target={link.external ? '_blank' : undefined}
+                  title={link.label}
                   className="text-muted-foreground hover:bg-accent hover:text-foreground rounded-md px-3 py-2 text-sm transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
@@ -134,11 +159,11 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
               />
             ) : (
               <Link
-                href="/settings"
+                href="/#play"
                 className={cn(buttonVariants(), 'gap-1.5')}
                 onClick={() => setMobileOpen(false)}
               >
-                {m['common.nav.get_started']()}
+                {m['common.nav.play_now']()}
               </Link>
             )}
           </div>

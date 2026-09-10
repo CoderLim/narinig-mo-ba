@@ -3,9 +3,11 @@ import { SiteHeader } from '@/components/site-header';
 
 export function Header() {
   const navLinks = [
-    { href: '/#features', label: m['landing.nav.features']() },
-    { href: '/pricing', label: m['landing.nav.pricing']() },
-    { href: '/blog', label: m['landing.nav.blog']() },
+    { href: '/#play', label: m['landing.nav.play']() },
+    { href: '/#how-to-play', label: m['landing.nav.howto']() },
+    { href: '/#about', label: m['landing.nav.about']() },
+    { href: '/#faq', label: m['landing.nav.faq']() },
+    { href: '/play', label: m['landing.nav.fullscreen']() },
   ];
 
   return <SiteHeader navLinks={navLinks} />;
