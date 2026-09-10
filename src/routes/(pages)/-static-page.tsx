@@ -3,9 +3,14 @@ import { notFound, useLoaderData } from '@tanstack/react-router';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
-import { hreflangLinks, localizedPageUrl, socialMetaTags } from '@/lib/seo';
+import {
+  hreflangForLocale,
+  hreflangLinks,
+  localizedPageUrl,
+  socialMetaTags,
+} from '@/lib/seo';
 import { m } from '@/paraglide/messages.js';
-import { baseLocale, getLocale } from '@/paraglide/runtime.js';
+import { baseLocale, getLocale, locales } from '@/paraglide/runtime.js';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,15 +34,28 @@ const pages = import.meta.glob<PageModule>('/src/content/pages/*.mdx', {
   eager: true,
 });
 
-function loadPage(slug: string, locale: string): PageModule | null {
-  return (
-    pages[`/src/content/pages/${slug}.${locale}.mdx`] ??
-    pages[`/src/content/pages/${slug}.${baseLocale}.mdx`] ??
-    null
-  );
+function exactPage(slug: string, locale: string): PageModule | null {
+  return pages[`/src/content/pages/${slug}.${locale}.mdx`] ?? null;
 }
 
-type LoaderData = { meta: PageMeta; slug: string; locale: string };
+function loadPage(slug: string, locale: string): PageModule | null {
+  return exactPage(slug, locale) ?? exactPage(slug, baseLocale);
+}
+
+function contentLocaleFor(slug: string, requestedLocale: string): string {
+  return exactPage(slug, requestedLocale) ? requestedLocale : baseLocale;
+}
+
+function translatedLocalesFor(slug: string): string[] {
+  return locales.filter((locale) => Boolean(exactPage(slug, locale)));
+}
+
+type LoaderData = {
+  meta: PageMeta;
+  slug: string;
+  locale: string;
+  contentLocale: string;
+};
 
 export function staticPageRouteOptions(slug: string) {
   return {
@@ -45,13 +63,19 @@ export function staticPageRouteOptions(slug: string) {
       const locale = getLocale();
       const page = loadPage(slug, locale);
       if (!page) throw notFound();
-      return { meta: page.meta, slug, locale };
+      return {
+        meta: page.meta,
+        slug,
+        locale,
+        contentLocale: contentLocaleFor(slug, locale),
+      };
     },
     head: ({ loaderData }: { loaderData?: LoaderData }) => {
       if (!loaderData) return {};
-      const { meta, slug: pageSlug, locale } = loaderData;
+      const { meta, slug: pageSlug, contentLocale } = loaderData;
       const path = `/${pageSlug}`;
-      const canonical = localizedPageUrl(path, locale);
+      const canonical = localizedPageUrl(path, contentLocale);
+      const availableLocales = translatedLocalesFor(pageSlug);
       const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -60,7 +84,7 @@ export function staticPageRouteOptions(slug: string) {
             '@type': 'ListItem',
             position: 1,
             name: 'Home',
-            item: localizedPageUrl('/', locale),
+            item: localizedPageUrl('/', contentLocale),
           },
           {
             '@type': 'ListItem',
@@ -82,7 +106,7 @@ export function staticPageRouteOptions(slug: string) {
           name: envConfigs.app_name,
           url: envConfigs.app_url,
         },
-        inLanguage: locale,
+        inLanguage: hreflangForLocale(contentLocale),
       };
 
       return {
@@ -95,7 +119,10 @@ export function staticPageRouteOptions(slug: string) {
             url: canonical,
           }),
         ],
-        links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks(path)],
+        links: [
+          { rel: 'canonical', href: canonical },
+          ...hreflangLinks(path, availableLocales),
+        ],
         scripts: [
           {
             type: 'application/ld+json',
@@ -122,7 +149,7 @@ function StaticPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <Link href="/" className="hover:text-foreground transition-colors">
-              Home
+              {m['common.pages.home']()}
             </Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
