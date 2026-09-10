@@ -17,15 +17,22 @@ export function localizedPageUrl(path: string, locale: string): string {
   }).href;
 }
 
+export function hreflangForLocale(locale: string): string {
+  return locale === 'tl' ? 'tl-PH' : locale;
+}
+
 export function defaultOgImageUrl(): string {
   return absoluteUrl(DEFAULT_OG_IMAGE_PATH);
 }
 
-export function hreflangLinks(path: string) {
+export function hreflangLinks(
+  path: string,
+  enabledLocales: readonly string[] = locales
+) {
   return [
-    ...locales.map((loc) => ({
+    ...enabledLocales.map((loc) => ({
       rel: 'alternate' as const,
-      hrefLang: loc,
+      hrefLang: hreflangForLocale(loc),
       href: localizedPageUrl(path, loc),
     })),
     {
