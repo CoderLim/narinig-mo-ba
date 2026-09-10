@@ -4,4 +4,5 @@
 export const localeNames: Record<string, string> = {
   en: 'English',
   zh: '中文',
+  tl: 'Filipino',
 };
