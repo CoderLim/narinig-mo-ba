@@ -1,9 +1,17 @@
 import type { ComponentType } from 'react';
 import { notFound, useLoaderData } from '@tanstack/react-router';
 
+import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
 import { baseLocale, getLocale, localizeUrl } from '@/paraglide/runtime.js';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 type PageMeta = {
   title: string;
@@ -16,8 +24,6 @@ type PageModule = {
   meta: PageMeta;
 };
 
-// Eagerly bundle the static content pages (small legal/info MDX files).
-// Keys are absolute from the project root.
 const pages = import.meta.glob<PageModule>('/src/content/pages/*.mdx', {
   eager: true,
 });
@@ -32,10 +38,6 @@ function loadPage(slug: string, locale: string): PageModule | null {
 
 type LoaderData = { meta: PageMeta; slug: string; locale: string };
 
-// Shared route options for static MDX pages. Each page gets its own
-// explicit route file (e.g. privacy-policy.tsx) so static segments
-// always outrank dynamic ones — add a new page by creating the MDX
-// content plus a thin route file using this factory.
 export function staticPageRouteOptions(slug: string) {
   return {
     loader: (): LoaderData => {
@@ -72,6 +74,20 @@ function StaticPage() {
 
   return (
     <article>
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <Link href="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{meta.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <header className="border-border mb-6 border-b pb-5">
         <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
           {meta.title}
