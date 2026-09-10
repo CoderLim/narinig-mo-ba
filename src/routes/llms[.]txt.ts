@@ -5,9 +5,61 @@ import { baseLocale } from '@/paraglide/runtime.js';
 import { getLocalPosts, mergePosts } from '@/content/posts';
 
 const STATIC_PAGES: { path: string; title: string; description: string }[] = [
-  { path: '', title: 'Home', description: 'Landing page' },
-  { path: '/pricing', title: 'Pricing', description: 'Pricing plans' },
-  { path: '/blog', title: 'Blog', description: 'Blog posts and articles' },
+  {
+    path: '',
+    title: 'Home',
+    description: 'Play Narinig Mo Ba? free in your browser',
+  },
+  {
+    path: '/play',
+    title: 'Play',
+    description: 'Fullscreen browser play view',
+  },
+  {
+    path: '/how-to-play-narinig-mo-ba',
+    title: 'How to Play',
+    description: 'Controls, store routine, and beginner tips',
+  },
+  {
+    path: '/narinig-mo-ba-walkthrough',
+    title: 'Walkthrough',
+    description: 'Spoiler-light store and story guide',
+  },
+  {
+    path: '/narinig-mo-ba-ending',
+    title: 'Ending Explained',
+    description: 'Spoilers, clues, and confirmed story context',
+  },
+  {
+    path: '/narinig-mo-ba-story',
+    title: 'Story & Themes',
+    description: 'Premise, setting, and creator context',
+  },
+  {
+    path: '/narinig-mo-ba-mobile',
+    title: 'Mobile Status',
+    description: 'Android, iPhone, and touchscreen status',
+  },
+  {
+    path: '/narinig-mo-ba-download',
+    title: 'Download Guide',
+    description: 'Windows, Mac, Linux, and browser download guide',
+  },
+  {
+    path: '/blog',
+    title: 'Blog',
+    description: 'Updates and notes about Narinig Mo Ba?',
+  },
+  {
+    path: '/privacy-policy',
+    title: 'Privacy Policy',
+    description: 'Privacy policy',
+  },
+  {
+    path: '/terms-of-service',
+    title: 'Terms of Service',
+    description: 'Terms of service',
+  },
 ];
 
 export const Route = createFileRoute('/llms.txt')({
@@ -41,7 +93,8 @@ export const Route = createFileRoute('/llms.txt')({
           '## Pages',
           '',
           ...STATIC_PAGES.map(
-            (p) => `- [${p.title}](${app_url}${p.path}): ${p.description}`
+            (p) =>
+              `- [${p.title}](${app_url}${p.path || '/'}): ${p.description}`
           ),
         ];
 

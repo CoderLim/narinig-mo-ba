@@ -3,13 +3,9 @@ import { notFound, useLoaderData } from '@tanstack/react-router';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import { hreflangLinks, localizedPageUrl, socialMetaTags } from '@/lib/seo';
 import { m } from '@/paraglide/messages.js';
-import {
-  baseLocale,
-  getLocale,
-  locales,
-  localizeUrl,
-} from '@/paraglide/runtime.js';
+import { baseLocale, getLocale } from '@/paraglide/runtime.js';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -53,37 +49,58 @@ export function staticPageRouteOptions(slug: string) {
     },
     head: ({ loaderData }: { loaderData?: LoaderData }) => {
       if (!loaderData) return {};
-      const { meta, locale } = loaderData;
-      const urlFor = (loc: string) =>
-        localizeUrl(`${envConfigs.app_url}/${slug}`, {
-          locale: loc as ReturnType<typeof getLocale>,
-        }).href;
-      const canonical = urlFor(locale);
-      const ogImage = `${envConfigs.app_url}/logo.png`;
+      const { meta, slug: pageSlug, locale } = loaderData;
+      const path = `/${pageSlug}`;
+      const canonical = localizedPageUrl(path, locale);
+      const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: localizedPageUrl('/', locale),
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: meta.title,
+            item: canonical,
+          },
+        ],
+      };
+      const webPageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: meta.title,
+        description: meta.description,
+        url: canonical,
+        dateModified: meta.updated_at,
+        isPartOf: {
+          '@type': 'WebSite',
+          name: envConfigs.app_name,
+          url: envConfigs.app_url,
+        },
+        inLanguage: locale,
+      };
+
       return {
         meta: [
           { title: meta.title },
           { name: 'description', content: meta.description },
-          { name: 'robots', content: 'index, follow' },
-          { property: 'og:title', content: meta.title },
-          { property: 'og:description', content: meta.description },
-          { property: 'og:url', content: canonical },
-          { property: 'og:type', content: 'article' },
-          { property: 'og:site_name', content: envConfigs.app_name },
-          { property: 'og:image', content: ogImage },
-          { name: 'twitter:card', content: 'summary_large_image' },
-          { name: 'twitter:title', content: meta.title },
-          { name: 'twitter:description', content: meta.description },
-          { name: 'twitter:image', content: ogImage },
+          ...socialMetaTags({
+            title: meta.title,
+            description: meta.description,
+            url: canonical,
+          }),
         ],
-        links: [
-          { rel: 'canonical', href: canonical },
-          ...locales.map((loc) => ({
-            rel: 'alternate',
-            hrefLang: loc,
-            href: urlFor(loc),
-          })),
-          { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
+        links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks(path)],
+        scripts: [
+          {
+            type: 'application/ld+json',
+            children: JSON.stringify([webPageSchema, breadcrumbSchema]),
+          },
         ],
       };
     },
@@ -105,7 +122,7 @@ function StaticPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <Link href="/" className="hover:text-foreground transition-colors">
-              {m['common.pages.home']()}
+              Home
             </Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

@@ -268,7 +268,7 @@ export function Pricing({ title }: { title?: string } = {}) {
 
   async function handleCheckout(plan: PricingPlan) {
     if (!session?.user) {
-      const callbackUrl = encodeURIComponent(currentPathWithQuery('/pricing'));
+      const callbackUrl = encodeURIComponent(currentPathWithQuery('/'));
       router.push(`/sign-in?callbackUrl=${callbackUrl}`);
       return;
     }

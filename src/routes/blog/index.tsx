@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
+import { hreflangLinks, localizedPageUrl, socialMetaTags } from '@/lib/seo';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { BlogCard } from '@/components/blog-card';
@@ -16,36 +17,17 @@ export const Route = createFileRoute('/blog/')({
     return { locale, posts };
   },
   head: ({ loaderData }) => {
-    const locale = loaderData?.locale;
-    const urlFor = (loc: string) =>
-      localizeUrl(`${envConfigs.app_url}/blog`, { locale: loc as any }).href;
+    const locale = loaderData?.locale ?? 'en';
     const title = `${m['blog.title']({}, { locale: locale as any })} | ${envConfigs.app_name}`;
     const description = m['blog.description']({}, { locale: locale as any });
-    const ogImage = `${envConfigs.app_url}/logo.png`;
+    const canonical = localizedPageUrl('/blog', locale);
     return {
       meta: [
         { title },
         { name: 'description', content: description },
-        { name: 'robots', content: 'noindex, follow' },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:url', content: urlFor(locale ?? 'en') },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:image', content: ogImage },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: description },
-        { name: 'twitter:image', content: ogImage },
+        ...socialMetaTags({ title, description, url: canonical }),
       ],
-      links: [
-        { rel: 'canonical', href: urlFor(locale ?? 'en') },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: urlFor(loc),
-        })),
-        { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-      ],
+      links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks('/blog')],
     };
   },
   component: BlogPage,

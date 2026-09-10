@@ -4,8 +4,14 @@ import { ArrowLeft, Calendar } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
+import {
+  defaultOgImageUrl,
+  hreflangLinks,
+  localizedPageUrl,
+  socialMetaTags,
+} from '@/lib/seo';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { MarkdownContent } from '@/components/markdown-content';
@@ -25,29 +31,49 @@ export const Route = createFileRoute('/blog/$slug')({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const { locale, post } = loaderData;
-    const canonical = localizeUrl(`${envConfigs.app_url}/blog/${post.slug}`, {
-      locale: locale as any,
-    }).href;
+    const path = `/blog/${post.slug}`;
+    const canonical = localizedPageUrl(path, locale);
     const title = `${post.title} | ${envConfigs.app_name}`;
-    const ogImage = post.image?.startsWith('http')
-      ? post.image
-      : `${envConfigs.app_url}${post.image || '/logo.png'}`;
+    const description = post.description || envConfigs.app_description;
+    const image = post.image
+      ? post.image.startsWith('http')
+        ? post.image
+        : `${envConfigs.app_url.replace(/\/$/, '')}${post.image}`
+      : defaultOgImageUrl();
+
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description,
+      image,
+      datePublished: post.createdAt,
+      author: post.authorName
+        ? { '@type': 'Person', name: post.authorName }
+        : undefined,
+      mainEntityOfPage: canonical,
+      inLanguage: locale,
+    };
+
     return {
       meta: [
         { title },
-        { name: 'description', content: post.description },
-        { name: 'robots', content: 'noindex, follow' },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: post.description },
-        { property: 'og:url', content: canonical },
-        { property: 'og:type', content: 'article' },
-        { property: 'og:image', content: ogImage },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: post.description },
-        { name: 'twitter:image', content: ogImage },
+        { name: 'description', content: description },
+        ...socialMetaTags({
+          title,
+          description,
+          url: canonical,
+          image,
+          type: 'article',
+        }),
       ],
-      links: [{ rel: 'canonical', href: canonical }],
+      links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks(path)],
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify(articleSchema),
+        },
+      ],
     };
   },
   component: BlogPostPage,

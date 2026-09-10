@@ -2,10 +2,10 @@ import { createFileRoute } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
-import { envConfigs } from '@/config';
+import { hreflangLinks, localizedPageUrl, socialMetaTags } from '@/lib/seo';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
 import { GameIframe } from '@/components/game-iframe';
@@ -68,40 +68,19 @@ export const Route = createFileRoute('/play')({
   },
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
-    const urlFor = (loc: string) =>
-      localizeUrl(`${envConfigs.app_url}/play`, { locale: loc as any }).href;
     const title = m['play.seo.title']({}, { locale: locale as any });
     const description = m['play.seo.description'](
       {},
       { locale: locale as any }
     );
-    const canonical = urlFor(locale);
-    const ogImage = `${envConfigs.app_url}/logo.png`;
+    const canonical = localizedPageUrl('/play', locale);
     return {
       meta: [
         { title },
         { name: 'description', content: description },
-        { name: 'robots', content: 'index, follow' },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:url', content: canonical },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: envConfigs.app_name },
-        { property: 'og:image', content: ogImage },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: description },
-        { name: 'twitter:image', content: ogImage },
+        ...socialMetaTags({ title, description, url: canonical }),
       ],
-      links: [
-        { rel: 'canonical', href: canonical },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: urlFor(loc),
-        })),
-        { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-      ],
+      links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks('/play')],
     };
   },
   component: PlayPage,

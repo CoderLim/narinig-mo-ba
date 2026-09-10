@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { envConfigs } from '@/config';
+import { hreflangLinks, localizedPageUrl, socialMetaTags } from '@/lib/seo';
 import { m } from '@/paraglide/messages.js';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
+import { getLocale } from '@/paraglide/runtime.js';
 import { AboutGame } from '@/blocks/about-game';
 import { CTA } from '@/blocks/cta';
 import { FAQ } from '@/blocks/faq';
@@ -38,15 +39,12 @@ export const Route = createFileRoute('/')({
   },
   head: ({ loaderData }) => {
     const locale = loaderData?.locale ?? 'en';
-    const urlFor = (loc: string) =>
-      localizeUrl(`${envConfigs.app_url}/`, { locale: loc as any }).href;
     const title = m['landing.seo.title']({}, { locale: locale as any });
     const description = m['landing.seo.description'](
       {},
       { locale: locale as any }
     );
-    const canonical = urlFor(locale);
-    const ogImage = `${envConfigs.app_url}/logo.png`;
+    const canonical = localizedPageUrl('/', locale);
     const schema = {
       '@context': 'https://schema.org',
       '@graph': [
@@ -62,7 +60,8 @@ export const Route = createFileRoute('/')({
           },
           description,
           url: canonical,
-          inLanguage: ['en', 'fil'],
+          image: `${envConfigs.app_url.replace(/\/$/, '')}/og.png`,
+          inLanguage: ['en', 'zh'],
         },
         {
           '@type': 'FAQPage',
@@ -97,6 +96,34 @@ export const Route = createFileRoute('/')({
             },
             {
               '@type': 'Question',
+              name: m['landing.faq.play.question'](
+                {},
+                { locale: locale as any }
+              ),
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: m['landing.faq.play.answer'](
+                  {},
+                  { locale: locale as any }
+                ),
+              },
+            },
+            {
+              '@type': 'Question',
+              name: m['landing.faq.controls.question'](
+                {},
+                { locale: locale as any }
+              ),
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: m['landing.faq.controls.answer'](
+                  {},
+                  { locale: locale as any }
+                ),
+              },
+            },
+            {
+              '@type': 'Question',
               name: m['landing.faq.official.question'](
                 {},
                 { locale: locale as any }
@@ -104,6 +131,20 @@ export const Route = createFileRoute('/')({
               acceptedAnswer: {
                 '@type': 'Answer',
                 text: m['landing.faq.official.answer'](
+                  {},
+                  { locale: locale as any }
+                ),
+              },
+            },
+            {
+              '@type': 'Question',
+              name: m['landing.faq.mobile.question'](
+                {},
+                { locale: locale as any }
+              ),
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: m['landing.faq.mobile.answer'](
                   {},
                   { locale: locale as any }
                 ),
@@ -118,27 +159,9 @@ export const Route = createFileRoute('/')({
       meta: [
         { title },
         { name: 'description', content: description },
-        { name: 'robots', content: 'index, follow' },
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:url', content: canonical },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: envConfigs.app_name },
-        { property: 'og:image', content: ogImage },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: description },
-        { name: 'twitter:image', content: ogImage },
+        ...socialMetaTags({ title, description, url: canonical }),
       ],
-      links: [
-        { rel: 'canonical', href: canonical },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: urlFor(loc),
-        })),
-        { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-      ],
+      links: [{ rel: 'canonical', href: canonical }, ...hreflangLinks('/')],
       scripts: [
         {
           type: 'application/ld+json',

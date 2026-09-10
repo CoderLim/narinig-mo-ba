@@ -15,11 +15,11 @@ const publicEnv = (key: string) => metaEnv[key] ?? procEnv[key];
 
 export const envConfigs: Record<string, string> = {
   // App (public)
-  app_url: publicEnv('VITE_APP_URL') ?? 'http://localhost:3000',
+  app_url: publicEnv('VITE_APP_URL') ?? 'https://narinigmoba.site',
   app_name: publicEnv('VITE_APP_NAME') ?? 'Narinig Mo Ba?',
   app_description:
     publicEnv('VITE_APP_DESCRIPTION') ??
-    'Guides, walkthrough, story, ending, mobile status and download information for Narinig Mo Ba.',
+    'Play Narinig Mo Ba? free in your browser — a Filipino sari-sari store psychological horror game. Guides, walkthrough, ending, mobile status, and download info.',
   app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.png',
 
   // Database
