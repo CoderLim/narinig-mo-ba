@@ -40,19 +40,19 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2">
           <img
-            src="/logo.svg"
-            alt=""
+            src={envConfigs.app_logo || '/logo.png'}
+            alt={envConfigs.app_name}
             width={28}
             height={28}
-            className="size-7"
+            className="size-7 rounded-sm object-cover"
           />
           <span className="font-serif text-lg italic">
             {envConfigs.app_name}
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 md:flex">
+        {/* Desktop nav — lg+ so tablet keeps the sheet (6 links overflow at md) */}
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks?.map((link) =>
             isExternalHref(link.href) ? (
               <a
@@ -80,7 +80,7 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <LocaleSelector />
           <ThemeToggle />
           {user ? (
@@ -105,9 +105,10 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
           )}
         </div>
 
-        {/* Mobile toggle */}
+        {/* Mobile / tablet toggle — ≥40px tap target */}
         <button
-          className="p-2 md:hidden"
+          type="button"
+          className="inline-flex size-10 items-center justify-center rounded-md lg:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
@@ -116,9 +117,9 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile / tablet menu */}
       {mobileOpen && (
-        <div className="border-border border-t px-4 pt-2 pb-4 md:hidden">
+        <div className="border-border border-t px-4 pt-2 pb-4 lg:hidden">
           <nav className="flex flex-col gap-2">
             {navLinks?.map((link) =>
               isExternalHref(link.href) ? (

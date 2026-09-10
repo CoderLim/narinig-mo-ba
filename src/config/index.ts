@@ -20,7 +20,7 @@ export const envConfigs: Record<string, string> = {
   app_description:
     publicEnv('VITE_APP_DESCRIPTION') ??
     'Guides, walkthrough, story, ending, mobile status and download information for Narinig Mo Ba.',
-  app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.svg',
+  app_logo: publicEnv('VITE_APP_LOGO') ?? '/logo.png',
 
   // Database
   database_url: procEnv.DATABASE_URL ?? '',

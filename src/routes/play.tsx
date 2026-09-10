@@ -76,6 +76,7 @@ export const Route = createFileRoute('/play')({
       { locale: locale as any }
     );
     const canonical = urlFor(locale);
+    const ogImage = `${envConfigs.app_url}/logo.png`;
     return {
       meta: [
         { title },
@@ -85,6 +86,12 @@ export const Route = createFileRoute('/play')({
         { property: 'og:description', content: description },
         { property: 'og:url', content: canonical },
         { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: envConfigs.app_name },
+        { property: 'og:image', content: ogImage },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: ogImage },
       ],
       links: [
         { rel: 'canonical', href: canonical },

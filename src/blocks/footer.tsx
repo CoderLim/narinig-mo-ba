@@ -11,14 +11,32 @@ export function Footer() {
       ],
     },
     {
-      title: 'Guides',
+      title: m['landing.footer.guides'](),
       links: [
-        { label: 'How to Play', href: '/how-to-play-narinig-mo-ba' },
-        { label: 'Walkthrough', href: '/narinig-mo-ba-walkthrough' },
-        { label: 'Ending Explained', href: '/narinig-mo-ba-ending' },
-        { label: 'Story & Themes', href: '/narinig-mo-ba-story' },
-        { label: 'Mobile Status', href: '/narinig-mo-ba-mobile' },
-        { label: 'Download Guide', href: '/narinig-mo-ba-download' },
+        {
+          label: m['landing.footer.howto'](),
+          href: '/how-to-play-narinig-mo-ba',
+        },
+        {
+          label: m['landing.footer.walkthrough'](),
+          href: '/narinig-mo-ba-walkthrough',
+        },
+        {
+          label: m['landing.footer.ending'](),
+          href: '/narinig-mo-ba-ending',
+        },
+        {
+          label: m['landing.footer.story'](),
+          href: '/narinig-mo-ba-story',
+        },
+        {
+          label: m['landing.footer.mobile'](),
+          href: '/narinig-mo-ba-mobile',
+        },
+        {
+          label: m['landing.footer.download'](),
+          href: '/narinig-mo-ba-download',
+        },
       ],
     },
     {

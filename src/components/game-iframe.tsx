@@ -13,7 +13,7 @@ export function GameIframe({
     <div
       className={
         className ??
-        'border-border bg-muted/40 relative aspect-video w-full overflow-hidden rounded-xl border shadow-lg'
+        'border-border bg-muted/40 relative aspect-[4/3] w-full overflow-hidden rounded-xl border shadow-lg sm:aspect-video'
       }
     >
       <iframe

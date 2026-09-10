@@ -4,7 +4,12 @@ import { notFound, useLoaderData } from '@tanstack/react-router';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
-import { baseLocale, getLocale, localizeUrl } from '@/paraglide/runtime.js';
+import {
+  baseLocale,
+  getLocale,
+  locales,
+  localizeUrl,
+} from '@/paraglide/runtime.js';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -49,15 +54,37 @@ export function staticPageRouteOptions(slug: string) {
     head: ({ loaderData }: { loaderData?: LoaderData }) => {
       if (!loaderData) return {};
       const { meta, locale } = loaderData;
-      const canonical = localizeUrl(`${envConfigs.app_url}/${slug}`, {
-        locale: locale as ReturnType<typeof getLocale>,
-      }).href;
+      const urlFor = (loc: string) =>
+        localizeUrl(`${envConfigs.app_url}/${slug}`, {
+          locale: loc as ReturnType<typeof getLocale>,
+        }).href;
+      const canonical = urlFor(locale);
+      const ogImage = `${envConfigs.app_url}/logo.png`;
       return {
         meta: [
           { title: meta.title },
           { name: 'description', content: meta.description },
+          { name: 'robots', content: 'index, follow' },
+          { property: 'og:title', content: meta.title },
+          { property: 'og:description', content: meta.description },
+          { property: 'og:url', content: canonical },
+          { property: 'og:type', content: 'article' },
+          { property: 'og:site_name', content: envConfigs.app_name },
+          { property: 'og:image', content: ogImage },
+          { name: 'twitter:card', content: 'summary_large_image' },
+          { name: 'twitter:title', content: meta.title },
+          { name: 'twitter:description', content: meta.description },
+          { name: 'twitter:image', content: ogImage },
         ],
-        links: [{ rel: 'canonical', href: canonical }],
+        links: [
+          { rel: 'canonical', href: canonical },
+          ...locales.map((loc) => ({
+            rel: 'alternate',
+            hrefLang: loc,
+            href: urlFor(loc),
+          })),
+          { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
+        ],
       };
     },
     component: StaticPage,
@@ -78,7 +105,7 @@ function StaticPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <Link href="/" className="hover:text-foreground transition-colors">
-              Home
+              {m['common.pages.home']()}
             </Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

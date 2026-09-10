@@ -16,13 +16,23 @@ const extFromMime = (mimeType: string) => {
     'image/png': 'png',
     'image/webp': 'webp',
     'image/gif': 'gif',
-    'image/svg+xml': 'svg',
     'image/avif': 'avif',
     'image/heic': 'heic',
     'image/heif': 'heif',
   };
   return map[mimeType] || '';
 };
+
+const ALLOWED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'image/avif',
+  'image/heic',
+  'image/heif',
+]);
 
 // Cap for the no-storage local-disk fallback (dev). Configurable via INLINE_IMAGE_MAX_KB.
 const INLINE_MAX_BYTES =
@@ -53,8 +63,10 @@ async function POST({ request }: { request: Request }) {
     }> = [];
 
     for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        return respErr(`File ${file.name} is not an image`);
+      if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+        return respErr(
+          `File ${file.name} must be a raster image (JPEG, PNG, WebP, GIF, AVIF, HEIC)`
+        );
       }
 
       const arrayBuffer = await file.arrayBuffer();
