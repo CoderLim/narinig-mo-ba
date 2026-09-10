@@ -7,7 +7,6 @@ export function Footer() {
       title: m['landing.footer.product'](),
       links: [
         { label: m['landing.nav.play'](), href: '/#play' },
-        { label: m['landing.nav.fullscreen'](), href: '/play' },
         { label: m['landing.nav.howto'](), href: '/#how-to-play' },
       ],
     },
