@@ -9,7 +9,6 @@ export function Header() {
     { href: '/narinig-mo-ba-walkthrough', label: 'Walkthrough' },
     { href: '/narinig-mo-ba-story', label: 'Story' },
     { href: '/#faq', label: m['landing.nav.faq']() },
-    { href: '/play', label: m['landing.nav.fullscreen']() },
   ];
 
   return <SiteHeader navLinks={navLinks} />;
