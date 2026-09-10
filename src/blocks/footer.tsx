@@ -12,6 +12,17 @@ export function Footer() {
       ],
     },
     {
+      title: 'Guides',
+      links: [
+        { label: 'How to Play', href: '/how-to-play-narinig-mo-ba' },
+        { label: 'Walkthrough', href: '/narinig-mo-ba-walkthrough' },
+        { label: 'Ending Explained', href: '/narinig-mo-ba-ending' },
+        { label: 'Story & Themes', href: '/narinig-mo-ba-story' },
+        { label: 'Mobile Status', href: '/narinig-mo-ba-mobile' },
+        { label: 'Download Guide', href: '/narinig-mo-ba-download' },
+      ],
+    },
+    {
       title: m['landing.footer.resources'](),
       links: [
         {
