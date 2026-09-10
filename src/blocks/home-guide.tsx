@@ -1,6 +1,12 @@
 import { Link } from '@/core/i18n/navigation';
+import { getLocale } from '@/paraglide/runtime.js';
+import { HomeGuideTl } from '@/blocks/home-guide-tl';
 
 export function HomeGuide() {
+  if (getLocale() === 'tl') {
+    return <HomeGuideTl />;
+  }
+
   return (
     <section className="px-4 py-20 sm:py-28" aria-labelledby="guide-heading">
       <div className="mx-auto max-w-5xl">
