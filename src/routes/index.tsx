@@ -61,7 +61,7 @@ export const Route = createFileRoute('/')({
           description,
           url: canonical,
           image: `${envConfigs.app_url.replace(/\/$/, '')}/og.png`,
-          inLanguage: ['en', 'zh'],
+          inLanguage: ['en', 'zh', 'tl-PH'],
         },
         {
           '@type': 'FAQPage',
