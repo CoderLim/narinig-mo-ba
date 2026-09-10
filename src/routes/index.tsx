@@ -1,71 +1,57 @@
+import { MDXProvider } from '@mdx-js/react';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { envConfigs } from '@/config';
-import { m } from '@/paraglide/messages.js';
-import { getLocale, locales, localizeUrl } from '@/paraglide/runtime.js';
-import { Blog } from '@/blocks/blog';
-import { CTA } from '@/blocks/cta';
-import { FAQ } from '@/blocks/faq';
-import { Features } from '@/blocks/features';
 import { Footer } from '@/blocks/footer';
 import { Header } from '@/blocks/header';
-import { Hero } from '@/blocks/hero';
-import { Pricing } from '@/blocks/pricing';
-import { SupportWidget } from '@/blocks/support-widget';
-import { getBlogPostsFn } from '@/content/posts/server';
+import { mdxComponents } from '@/components/mdx-components';
+import { envConfigs } from '@/config';
+import HomeContent, { meta } from '@/content/pages/home.en.mdx';
 
-/**
- * Default landing page — demo content. Rewrite this file (and the blocks in
- * src/blocks/) for your project. The primitives in src/components/ stay.
- * See /quick-start or /clone-website to automate the rewrite.
- */
 function HomePage() {
-  const { posts } = Route.useLoaderData();
-
   return (
     <div className="bg-background text-foreground flex min-h-screen flex-col">
       <Header />
-      <main>
-        <Hero />
-        <Features />
-        <Pricing />
-        <FAQ />
-        <Blog posts={posts} />
-        <CTA />
+      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-12 md:px-8 md:py-16">
+        <header className="border-border mb-10 border-b pb-8">
+          <p className="text-primary text-xs font-semibold tracking-[0.2em] uppercase">
+            Filipino Psychological Horror Game Guide
+          </p>
+          <h1 className="text-foreground mt-3 font-serif text-4xl leading-tight font-normal tracking-tight md:text-6xl">
+            Narinig Mo Ba?
+          </h1>
+          <p className="text-muted-foreground mt-4 max-w-3xl text-lg leading-8">
+            {meta.description}
+          </p>
+        </header>
+
+        <article className="text-foreground/90 text-[15px] leading-7">
+          <MDXProvider components={mdxComponents}>
+            <HomeContent />
+          </MDXProvider>
+        </article>
       </main>
       <Footer />
-      <SupportWidget />
     </div>
   );
 }
 
 export const Route = createFileRoute('/')({
-  loader: async () => {
-    const locale = getLocale();
-    const posts = await getBlogPostsFn({ data: { locale, limit: 3 } });
-    return { locale, posts };
-  },
-  head: ({ loaderData }) => {
-    const locale = loaderData?.locale ?? 'en';
-    const urlFor = (loc: string) =>
-      localizeUrl(`${envConfigs.app_url}/`, { locale: loc as any }).href;
-    return {
-      meta: [
-        {
-          name: 'description',
-          content: m['landing.hero.subheadline']({}, { locale: locale as any }),
-        },
-      ],
-      links: [
-        { rel: 'canonical', href: urlFor(locale) },
-        ...locales.map((loc) => ({
-          rel: 'alternate',
-          hrefLang: loc,
-          href: urlFor(loc),
-        })),
-        { rel: 'alternate', hrefLang: 'x-default', href: urlFor('en') },
-      ],
-    };
-  },
+  head: () => ({
+    meta: [
+      { title: meta.title },
+      { name: 'description', content: meta.description },
+      {
+        name: 'keywords',
+        content:
+          'Narinig Mo Ba, Narinig Mo Ba game, Filipino horror game, sari-sari store horror',
+      },
+    ],
+    links: [
+      {
+        rel: 'canonical',
+        href: `${envConfigs.app_url.replace(/\/$/, '')}/`,
+      },
+    ],
+  }),
   component: HomePage,
 });
