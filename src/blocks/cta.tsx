@@ -16,7 +16,7 @@ export function CTA() {
           <p className="text-muted-foreground mx-auto mt-5 max-w-2xl text-base leading-relaxed sm:text-lg">
             {m['landing.cta.subheadline']()}
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="mt-8 flex justify-center">
             <Link
               href="/#play"
               className={cn(
@@ -27,16 +27,6 @@ export function CTA() {
             >
               {m['landing.cta.button']()}
               <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              href="/play"
-              className={cn(
-                buttonVariants({ variant: 'outline', size: 'lg' }),
-                'h-12 rounded-full px-8'
-              )}
-              title={m['landing.cta.secondary']()}
-            >
-              {m['landing.cta.secondary']()}
             </Link>
           </div>
         </div>
