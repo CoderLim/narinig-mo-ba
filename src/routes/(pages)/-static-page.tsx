@@ -104,7 +104,8 @@ export function staticPageRouteOptions(slug: string) {
         isPartOf: {
           '@type': 'WebSite',
           name: envConfigs.app_name,
-          url: envConfigs.app_url,
+          // Must be locale-aware: production audit rejects apex URLs in zh JSON-LD.
+          url: localizedPageUrl('/', locale),
         },
         inLanguage: hreflangForLocale(contentLocale),
       };

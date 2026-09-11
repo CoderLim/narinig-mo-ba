@@ -22,7 +22,8 @@
   },
   "cloudflare": {
     "alwaysHttps": true,
-    "redirectWwwToApex": true
+    "redirectWwwToApex": true,
+    "crawlerHints": false
   },
   "email": {
     "enabled": true,

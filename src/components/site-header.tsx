@@ -3,14 +3,11 @@
 import { useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 
-import { useSession } from '@/core/auth/client';
 import { Link } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
-import { currentPathWithQuery } from '@/lib/redirect';
 import { cn } from '@/lib/utils';
 import { m } from '@/paraglide/messages.js';
 import { LocaleSelector } from '@/components/locale-selector';
-import { SiteUserMenu } from '@/components/site-user-menu';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { buttonVariants } from '@/components/ui/button';
 
@@ -24,15 +21,8 @@ export interface NavLink {
 /** Off-site URLs render as plain <a>; internal paths use the locale-aware Link. */
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 
-function authHref(path: '/sign-in' | '/sign-up') {
-  const callbackUrl = encodeURIComponent(currentPathWithQuery('/'));
-  return `${path}?callbackUrl=${callbackUrl}`;
-}
-
 export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { data: session } = useSession();
-  const user = session?.user;
 
   return (
     <header className="bg-background/80 sticky top-0 z-50 w-full backdrop-blur-sm">
@@ -83,26 +73,10 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
         <div className="hidden items-center gap-3 lg:flex">
           <LocaleSelector />
           <ThemeToggle />
-          {user ? (
-            <SiteUserMenu
-              name={user.name || 'User'}
-              email={user.email}
-              image={user.image}
-            />
-          ) : (
-            <>
-              <Link
-                href={authHref('/sign-in')}
-                className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}
-              >
-                {m['common.nav.sign_in']()}
-              </Link>
-              <Link href="/#play" className={cn(buttonVariants(), 'gap-1.5')}>
-                {m['common.nav.play_now']()}
-                <ArrowRight className="size-4" />
-              </Link>
-            </>
-          )}
+          <Link href="/#play" className={cn(buttonVariants(), 'gap-1.5')}>
+            {m['common.nav.play_now']()}
+            <ArrowRight className="size-4" />
+          </Link>
         </div>
 
         {/* Mobile / tablet toggle — ≥40px tap target */}
@@ -152,21 +126,13 @@ export function SiteHeader({ navLinks }: { navLinks?: NavLink[] }) {
             <LocaleSelector />
             <ThemeToggle />
             <div className="flex-1" />
-            {user ? (
-              <SiteUserMenu
-                name={user.name || 'User'}
-                email={user.email}
-                image={user.image}
-              />
-            ) : (
-              <Link
-                href="/#play"
-                className={cn(buttonVariants(), 'gap-1.5')}
-                onClick={() => setMobileOpen(false)}
-              >
-                {m['common.nav.play_now']()}
-              </Link>
-            )}
+            <Link
+              href="/#play"
+              className={cn(buttonVariants(), 'gap-1.5')}
+              onClick={() => setMobileOpen(false)}
+            >
+              {m['common.nav.play_now']()}
+            </Link>
           </div>
         </div>
       )}

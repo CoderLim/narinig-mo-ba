@@ -12,7 +12,6 @@ import { GamePlay } from '@/blocks/game-play';
 import { Header } from '@/blocks/header';
 import { HomeGuide } from '@/blocks/home-guide';
 import { HowToPlay } from '@/blocks/how-to-play';
-import { SupportWidget } from '@/blocks/support-widget';
 
 function HomePage() {
   return (
@@ -27,7 +26,6 @@ function HomePage() {
         <CTA />
       </main>
       <Footer />
-      <SupportWidget />
     </div>
   );
 }
